@@ -1,7 +1,7 @@
 # MongoDB
 
 ## Mongoose
-***1. reference to other documents***.   
+***<u>1. reference to other documents</u>***.   
 
 use `ref` to point to referenced collection
 
@@ -61,7 +61,7 @@ Book.findOne({ <filter> }, function(err, book){
 });
 ```
 
-#### 2. $or / $and    
+#### <u>2. $or / $and</u>    
 
 ```
 Tag.find({$or: [{name: "Tree"}, {name: "Binary Search"}]}, function (err, tree) {
@@ -72,7 +72,7 @@ Use $and in the same way
 
 
 
-#### 3. find document from an __Array__ by  array element's property value    
+#### <u>3. find document from an __Array__ by  array element's property value</u>    
 
 * __if the array is just an array of string or ObjectID__:         
   
@@ -110,7 +110,7 @@ __Note__: $all is AND, $in is OR
 
 ​     
 
-#### 4. Delete from Array: by `$pull`
+#### <u>4. Delete from Array: by `$pull`</u>
 
 ```javascript
 List.findOneAndUpdate({_id: <list_id>}, {$pull: {items: {_id: <item_id>}}}, function(){
