@@ -60,3 +60,57 @@ Book.findOne({ <filter> }, function(err, book){
 	});
 });
 ```
+
+###2. $or / $and    
+
+```
+Tag.find({$or: [{name: "Tree"}, {name: "Binary Search"}]}, function (err, tree) {
+    console.log(tree);
+    });
+```
+Use $and in the same way
+
+
+###3. find document from an __Array__ by  array element's property value    
+
+* __if the array is just an array of string or ObjectID__:         
+  
+```
+Post.find({tags: <tag._id> }, function (err, post) {
+    console.log(tree);
+    });
+```
+
+* __if the element in the array is objects with multiple properties__:    
+    
+```
+const Post = mongoose.Schema({
+	title: String,
+	tags:[{
+		name: String,
+		description: String,
+		category: String
+	}]
+});
+
+// only one condition
+Post.find({"tags.name" : <tagName>}, function(err){
+	...
+})
+
+//multiple conditions:
+Post.find({"tags.name" : {$all:[ <tagName1>, <tagName2>, ... ]}}, function(err){
+	...
+});
+
+```
+
+__Note__: $all is AND, $in is OR
+
+     
+         
+         
+
+## Troubleshooting
+***1.Erro: Address already in use***		    
+` sudo killall mongod`
