@@ -61,17 +61,18 @@ Book.findOne({ <filter> }, function(err, book){
 });
 ```
 
-###2. $or / $and    
+#### 2. $or / $and    
 
 ```
 Tag.find({$or: [{name: "Tree"}, {name: "Binary Search"}]}, function (err, tree) {
     console.log(tree);
     });
 ```
-Use $and in the same way
+Use $and in the same way     
 
 
-###3. find document from an __Array__ by  array element's property value    
+
+#### 3. find document from an __Array__ by  array element's property value    
 
 * __if the array is just an array of string or ObjectID__:         
   
@@ -82,7 +83,7 @@ Post.find({tags: <tag._id> }, function (err, post) {
 ```
 
 * __if the element in the array is objects with multiple properties__:    
-    
+  
 ```
 const Post = mongoose.Schema({
 	title: String,
@@ -107,9 +108,17 @@ Post.find({"tags.name" : {$all:[ <tagName1>, <tagName2>, ... ]}}, function(err){
 
 __Note__: $all is AND, $in is OR
 
-     
-         
-         
+​     
+
+#### 4. Delete from Array: by `$pull`
+
+```javascript
+List.findOneAndUpdate({_id: <list_id>}, {$pull: {items: {_id: <item_id>}}}, function(){
+    ...
+})
+```
+
+
 
 ## Troubleshooting
 ***1.Erro: Address already in use***		    
