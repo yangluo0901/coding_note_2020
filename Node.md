@@ -176,4 +176,65 @@
   ));
   ```
 
+
+## <u>3. Third Parity OAuth (Google)</u>
+
+* go to http://www.passportjs.org/packages/passport-google-oauth20/, install **passport-google-oauth20**
+
+* **register** the app with Google by going to **Google Developer Console** 
+
+  * create **New Project**
+  * go to **OAuth consent screen**, select **External**, add **Application Name**, choose **Scopes**, then **Save**
+  * go **Credentials**, create **OAuth client ID** --> select **app type** --> add`http://lcoalhost:3000` to **Authorized JavaScript Origin** which is the place host the app --> add uri into **Authorized redirect URIs** which is where google redirects (along with `accessToken`, `profile`, etc.) to after authenticate a user
+  * Store **Client ID** and **Client Secret** in `.env` file
+
+* add code to `app.js`
+
+  ```javascript
+  const GoogleStrategy = require('passport-google-oauth20').Strategy;
+  findOrCreate = require('mongoose-findorcreate');// enbale findOrCreate function
   
+  // ... other code, mongoose setup, passport initialization
+  
+  // cannot use simpified way
+  passport.serializeUser(function(user, done) {
+      done(null, user.id);
+  });
+  
+  passport.deserializeUser(function(id, done) {
+      User.findById(id, function(err, user) {
+          done(err, user);
+      });
+  });
+  
+  passport.use(new GoogleStrategy({
+          clientID: process.env.GOOGLE_CLIENT_ID,
+          clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+          callbackURL: "http://localhost:3000/auth/google/secrets",
+      // due to sunset the support of google + for this API, add:
+          userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo"
+      },
+      function(accessToken, refreshToken, profile, cb) {
+          User.findOrCreate({ googleId: profile.id }, function (err, user) {
+              // findorcreate is not a mongoose func, use an extra package
+              // install and require mongoose-findorcreate package, and plug in this 				package into the schema
+              return cb(err, user);
+          });
+      }
+  ));
+  
+  // once button is pressed, authenticate user with Google Strategy
+  app.get('/auth/google', 
+      passport.authenticate('google', { scope: ["profile"] })); // authenticate on the google server
+  
+  app.get('/auth/google/secrets', // Google sends back after authentication
+      passport.authenticate('google', { failureRedirect: '/login' }), // authenticate locally
+      function(req, res) {
+          // Successful authentication, redirect home.
+          res.redirect('/secrets');
+      });
+  
+  ```
+
+  
+
