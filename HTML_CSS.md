@@ -2,7 +2,7 @@
 
 ###1. Disable and gray out a link    
 
-```
+```scss
 .disable{
     color: currentColor;
     cursor: not-allowed;
@@ -14,7 +14,7 @@
 
 ###2. Place an element center when its position is __absolute__    
 
-```
+```css
 .pager{
     position: absolute;
     bottom: 100px;

@@ -19,7 +19,7 @@
 
 * The app was listening to the local port, we now need to make it listen to the **port** that Heroku generates. Add code below to `app.js` or any other **start script**. By using the code below, we can either run code remotely or locally
 
-  ```
+  ```javascript
   let port = process.env.PORT;
   if (port == null || port == "") {
     port = 3000;
@@ -31,7 +31,7 @@
 
 + Specify the right **version of Node** by add
 
-  ```
+  ```javascript
   "engines": {
       "node": "your node version"
     },

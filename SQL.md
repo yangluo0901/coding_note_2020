@@ -26,7 +26,7 @@ to change password of root, type in:
 `flush privileges;`      
 
 ###5. Import data to database    
-```
+```mysql
 LOAD DATA  LOCAL INFILE '<path_to_csv_file>'
 			INTO TABLE <dest_table> 
 			FIELDS TERMINATED BY ','
@@ -34,7 +34,7 @@ LOAD DATA  LOCAL INFILE '<path_to_csv_file>'
 			LINES TERMINATED BY '\n'
 			IGNORE 1 LINES (dest_col_1, @dummy,dest_col_2, @var)
 			SET <dest_col_n> = @var + "hello";
-```    
+```
 __Explanation__: System will go through the column one by one in the order that presented in csv file, lets say `data_table( user_id, age, gender, descritption)`, in the case above, system assigns all values of `user_id` to `dest_col_1`, ingnore `age` column, assgins all values of `gender` to `dest_col_2`, and assign the all values of `decription` + "hello" (for each row) to the `< column_name>`    
 
 ###6. ___Troubeshooting___: Error: `The MySQL server is running with the --secure-file-priv option so it cannot execute this statementî when use "LOAD DATA  ..."The MySQL server is running with the --secure-file-priv option so it cannot execute this statementî when use "LOAD DATA  ..."`    

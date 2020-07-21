@@ -5,7 +5,7 @@
 
 use `ref` to point to referenced collection
 
-```
+```javascript
 const bookSchema = new mongoose.Schema({
 	bookName: String,
 	authors: [{mongoose.Schema.Types.ObjectID, ref: "persion"}]        //use array
@@ -21,7 +21,7 @@ const Person = new mongoose.model("Person", personSchema);
 
 add a new document as a ref    
 
-```
+```javascript
 const newPerson = new Person({
 	_id: new mongoose.Types.ObjectID,
 	name: "Lee Sin"
@@ -51,7 +51,7 @@ Book.update({<filter>},{$push:{authors: newPerson}});
 
 link two collections by reference:
 
-```
+```javascript
 Book.findOne({ <filter> }, function(err, book){
 	// find out target author
 	Persion.findOne({ <filter> }, function(err, author){
@@ -63,7 +63,7 @@ Book.findOne({ <filter> }, function(err, book){
 
 #### <u>2. $or / $and</u>    
 
-```
+```javascript
 Tag.find({$or: [{name: "Tree"}, {name: "Binary Search"}]}, function (err, tree) {
     console.log(tree);
     });
@@ -76,7 +76,7 @@ Use $and in the same way
 
 * __if the array is just an array of string or ObjectID__:         
   
-```
+```javascript
 Post.find({tags: <tag._id> }, function (err, post) {
     console.log(tree);
     });
@@ -84,7 +84,7 @@ Post.find({tags: <tag._id> }, function (err, post) {
 
 * __if the element in the array is objects with multiple properties__:    
   
-```
+```javascript
 const Post = mongoose.Schema({
 	title: String,
 	tags:[{
