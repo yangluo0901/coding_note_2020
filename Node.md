@@ -238,3 +238,59 @@
 
   
 
+### 4. `export default` vs `module.exports`
+
+When you have
+
+```js
+export default {
+  bar() {}
+}
+```
+
+The actual object exported is of the following form:
+
+```js
+exports: {
+  default: {
+    bar() {}
+  }
+}
+```
+
+When you do a simple import (e.g., `import foo from './foo';`) you are actually getting the default object inside the import (i.e., `exports.default`). This will become apparent when you run babel to compile to ES5.
+
+When you try to import a specific function (e.g., `import { bar } from './foo';`), as per your case, you are actually trying to get `exports.bar` instead of `exports.default.bar`. Hence why the bar function is undefined.
+
+When you have just multiple exports:
+
+```js
+export function foo() {};
+export function bar() {};
+```
+
+You will end up having this object:
+
+```js
+exports: {
+  foo() {},
+  bar() {}
+}
+```
+
+And thus `import { bar } from './foo';` will work. This is the similar case with `module.exports` you are essentially storing an exports object as above. Hence you can import the bar function.
+
+### 5. response structure:
+
+```json
+config: {url: "/api/users", method: "post", data: "			  										{"name":"Ahri","email":"ahri@riot.com","password":"123456"}", headers: 					{…}, transformRequest: Array(1), …}
+data: {token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7I…								DQ4fQ.SXyV6dPvlxehIoFiCBpO6lzuxgROVlELgglKiVk5GhM"}
+
+headers: {connection: "close", content-length: "195", content-type: "application/json; 			charset=utf-8", date: "Thu, 06 Aug 2020 16:47:28 GMT", etag: "W/"c3-					zqR70NWdg3HPYWfEik1cmoRTOOg"", …}
+
+request: XMLHttpRequest {readyState: 4, timeout: 0, withCredentials: false, upload: XMLHttpRequestUpload, onreadystatechange: ƒ, …}
+status: 200
+statusText: "OK"
+__proto__: Object
+```
+
