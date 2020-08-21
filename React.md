@@ -255,7 +255,7 @@ add `files.length` as the dependency, every time the length changes, `useEffect`
 
 
 
-#### Order of the functions run 
+#### 7. Order of the functions run 
 
 ```js
 console.log(" i am running first, but child's functions run earlier if there is any");
@@ -281,3 +281,227 @@ const mapStateToProps = state =>({
 })
 ```
 
+
+
+#### 8. Understand `useState`
+
+```js
+export default function App() {
+  let text = "";
+  console.log("render .......");
+  const changeHandler = (e) => {
+    console.log(e.target.value);
+    text = e.target.value;
+    console.log(text);
+  };
+  return (
+    <div className="App">
+      <input type="text" value={text} onChange={changeHandler} />
+    </div>
+  );
+}
+```
+
+when we type in "a b c", console result is `render ...   a a b b c c`, value in the `input` does not change,  `value` attribute in the `input` is empty
+
+**<u>findings :</u>**
+
++ which means it does not re-render.
++ the `value` in the `e.target.value` is not the same with `value` attribute in the `input` tag
+
+```js
+export default function App() {
+  const [text, setText] = useState("");
+  console.log("render .......");
+  const changeHandler = (e) => setText(e.target.value);
+  return (
+    <div className="App">
+      <input type="text" value={text} onChange={changeHandler} />
+    </div>
+  );
+}
+```
+
+**<u>procedure</u>**: type in letter --> trigger `changeHandler` --> set `text = e.target.value` -->  due to `useState` is used, once `text` updates, `react` re-renders --> `value` attribute in the `input` tag updates to the latest value --> we see what we typed shows in the `input` area
+
+### 9. Other Hooks:
+
+**1. `useMemo`** Let's look at the example below first:
+
+```js
+export default function App() {
+  const [text, setText] = useState("");
+
+  const [word, setState] = useState("");
+
+  const changeHandler = (e) => setText(e.target.value);
+
+  const addItem = () => setState(text);
+
+  const veryHeavyCalculation = () => {
+    console.log("veryHeavyCalculation is triggered");
+    return word + "result";
+  };
+
+  // const results = useMemo(veryHeavyCalculation, [word]);
+  const results = veryHeavyCalculation();
+
+  console.log("rendering .....");
+  return (
+    <Fragment>
+      <input type="text" value={text} onChange={changeHandler} />
+      <button onClick={addItem}> Add Item </button>
+      <p>{results}</p>
+    </Fragment>
+  );
+}
+
+```
+
+The idea of this code is that, user can add word into `<p></p>`;
+
+Please note that contents in  `<p></p>` does not necessarily change unless the button is clicked 
+
+**However** **Every time** a letter is typed in to the input, `text` changes, `react` re-renders, `const results = veryHeavyCalculation();` is called  **again and again**. 
+
+**output**:
+
+```
+veryHeavyCalculation is triggered 
+rendering ..... 
+veryHeavyCalculation is triggered 
+rendering ..... 
+veryHeavyCalculation is triggered 
+rendering ..... 
+...
+```
+
+It wont be a problem if `veryHeavyCalculation` is light weighted, however, things change dramatically, if `veryHeavyCalculatioin` is **heavy** like what its name indicates. Lets see what happens if we utilize `useMemo` :
+
+```js
+export default function App() {
+  const [text, setText] = useState("");
+
+  const [word, setState] = useState("");
+
+  const changeHandler = (e) => setText(e.target.value);
+
+  const addItem = () => setState(text);
+
+  const veryHeavyCalculation = () => {
+    console.log("veryHeavyCalculation is triggered");
+    return word + "result";
+  };
+
+  const results = useMemo(veryHeavyCalculation, [word]);
+  // const results = veryHeavyCalculation();
+
+  console.log("rendering .....");
+  return (
+    <Fragment>
+      <input type="text" value={text} onChange={changeHandler} />
+      <button onClick={addItem}> Add Item </button>
+      <p>{results}</p>
+    </Fragment>
+  );
+}
+
+
+```
+
+**output**:
+
+```
+rendering ..... 
+rendering ..... 
+rendering ..... 
+rendering ..... 
+...
+```
+
+**conclusion**
+
+`useMemo` memoizes value, prevent unnecessary re-render. Please **note** that, `useMemo` does more work behind, do not overuse it unless the memoized value comes from heavy computations.
+
+**2. `useCallback`**
+
+lets look at the example below
+
+```js
+export default function App() {
+  const [value1, setValue1] = useState(0);
+
+  const [value2, setValue2] = useState(10);
+
+  const add1 = () => setValue1(value1 + 1);
+
+  const add2 = () => setValue2(value2 + 2);
+
+  const veryHeavyCalculation = () => {
+    console.log("veryHeavyCalculation is triggered");
+    return value2 * 1.1;
+  };
+
+  const another = veryHeavyCalculation();
+
+  console.log("rendering .....");
+  return (
+    <Fragment>
+      <p>value1 is {value1}</p>
+      <button onClick={add1}> Add Value1 </button>
+      <p>another value is {another}</p>
+      <button onClick={add2}> Add another value </button>
+    </Fragment>
+  );
+}
+
+```
+
+We notice that `another value` is independent with `value1`, every time we change the value of `value1`, it is not necessary for `another value` to change, right?
+
+but **output**:
+
+```
+veryHeavyCalculation is triggered 
+rendering ..... 
+veryHeavyCalculation is triggered 
+rendering ..... 
+veryHeavyCalculation is triggered 
+rendering ..... 
+```
+
+**solution**:
+
+```js
+export default function App() {
+  const [value1, setValue1] = useState(0);
+
+  const [value2, setValue2] = useState(10);
+
+  const add1 = () => setValue1(value1 + 1);
+
+  const add2 = () => setValue2(value2 + 2);
+
+  const veryHeavyCalculation = () => {
+    console.log("veryHeavyCalculation is triggered");
+    return value2 * 1.1;
+  };
+
+  const another = useMemo(veryHeavyCalculation, [value2]);
+
+  console.log("rendering .....");
+  return (
+    <Fragment>
+      <p>value1 is {value1}</p>
+      <button onClick={add1}> Add Value1 </button>
+      <p>another value is {another}</p>
+      <button onClick={add2}> Add another value </button>
+    </Fragment>
+  );
+}
+
+```
+
+**conclusion**:
+
+similar with `useMemo` to memoizes the value to prevent unnecessary renders, `useCallback` memoizes functions
