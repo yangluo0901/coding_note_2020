@@ -1,6 +1,6 @@
 # React.js
 
-### Troubleshooting:
+## Troubleshooting:
 
 #### 1. Error: `react-scripts not found`  after `npm install`:
 
@@ -32,7 +32,9 @@
 
    `"scripts": {    "start-dev": "nodemon app.js",  },`
 
-#### 3. `exact` in `React-router-dom`
+## Note:
+
+### 1. `exact` in `React-router-dom`
 
 In this example, nothing really. The `exact` param comes into play when you have multiple paths that have similar names:
 
@@ -60,7 +62,7 @@ So in this case, we should add `exact` to our `Users` route so that it will only
 </Switch>
 ```
 
-#### 4. `return` in `Array.map()` doesn't return anything
+### 2. `return` in `Array.map()` doesn't return anything
 
 ```javascript
 alerts.map((alert) => {
@@ -84,7 +86,7 @@ return alerts.map((alert) => {
 		});
 ```
 
-#### 5. How does React/React-redux update component when State/Store changes
+### 3. How does React/React-redux update component when State/Store changes
 
 + **React**: it will re-render every time, state changes, such as when we use `useState` hook:
 
@@ -125,7 +127,7 @@ const myComponent = () = {
 + `useEffect` , it is called after the each render if no **dependency** array is not defined. If an empty **dependency** array is provided, `useEffect` is only revoked after the first render.
 + `connect`, the `connect` function generates a wrapper component that subscribes to the store. When an action is dispatched, the wrapper component's callback is notified. It then runs `mapStateToProps` function and **shallow-compares** the result object at this moment against the previous result object, if results are different, then it passes the results to the component as props. <u>In one sentence, connect enables the component access store, compare states and update component by itself.</u>
 
-#### 6. How to fetch data to the component? Why component does not reflect update when update store from `useEffect` ?
+### 4. How to fetch data to the component? Why component does not reflect update when update store from `useEffect` ?
 
 **Key point** is that the state in the store might not be saved immediately or saved fast enough before rest of code runs
 
@@ -253,9 +255,7 @@ add `files.length` as the dependency, every time the length changes, `useEffect`
 4. once `store` finishes updating, re-render, `useEffect` called again,  `file.files = [...]` ( this is the result from the first round) even second round updating is not finished. Now there are option in the `<Select>`
 5. once the second round updating finishes, no re-render any more, since `files.length `  is still the same as the result of the first round
 
-
-
-#### 7. Order of the functions run 
+### 5. Order of the functions run 
 
 ```js
 console.log(" i am running first, but child's functions run earlier if there is any");
@@ -281,9 +281,7 @@ const mapStateToProps = state =>({
 })
 ```
 
-
-
-#### 8. Understand `useState`
+### 6. Understand `useState`
 
 ```js
 export default function App() {
@@ -324,9 +322,9 @@ export default function App() {
 
 **<u>procedure</u>**: type in letter --> trigger `changeHandler` --> set `text = e.target.value` -->  due to `useState` is used, once `text` updates, `react` re-renders --> `value` attribute in the `input` tag updates to the latest value --> we see what we typed shows in the `input` area
 
-### 9. Other Hooks:
+### 7. `useMemo`
 
-**1. `useMemo`** Let's look at the example below first:
+Let's look at the example below first:
 
 ```js
 export default function App() {
@@ -423,7 +421,7 @@ rendering .....
 
 `useMemo` memoizes value, prevent unnecessary re-render. Please **note** that, `useMemo` does more work behind, do not overuse it unless the memoized value comes from heavy computations.
 
-**2. `useCallback`**
+### 8. `useCallback`
 
 lets look at the example below
 
@@ -505,3 +503,215 @@ export default function App() {
 **conclusion**:
 
 similar with `useMemo` to memoizes the value to prevent unnecessary renders, `useCallback` memoizes functions
+
+
+
+### 9.`useRef` : 
+
+**<u>it does not hold state, so it will NOT re-render</u>**
+
+**Execution Order of `useEffect`**:
+
+```JS
+const Test = () => {
+  const [user, setUser] = useState({ name: "Yang", weight: 165 });
+    
+  const usePrevious = (value) => {
+    console.log(" Step-1");
+      
+    const ref = useRef();
+    useEffect(() => {
+      ref.current = value;
+      console.log(" Step-6");
+      console.log(ref.current);
+    }, [value]);
+
+    console.log(" Step-2");
+    console.log(ref.current);
+    return ref.current;
+  };
+
+  const someother = () => {
+    console.log("step-4");
+    useEffect(() => {
+      console.log(" Step-8");
+    });
+    return 0;
+  };
+
+  const previousUser = usePrevious(user);
+
+  console.log(" Step-3");
+  console.log(previousUser);
+
+  useEffect(() => {
+    console.log("inside effect Step-7");
+    console.log(previousUser);
+    console.log(user);
+    if (!isEqual(previousUser, user)) {
+      console.log("Effect is running");
+    }
+  });
+  const zero = someother();
+  console.log(" Step-5  ");
+
+  const handler = () => {
+    setUser((prev) => {
+      return {
+        ...prev,
+        weight: Math.random() >= 0.5 ? prev.weight + 1 : prev.weight
+      };
+    });
+  };
+
+  return (
+    <>
+      <p>Current weight : {user.weight}</p>
+      {/* <p>
+        <b>refFromUseRef</b> value: {refFromUseRef.current}
+      </p> */}
+      <p>
+        <b>previous weight </b>:
+        {typeof previousUser !== "undefined" && previousUser.weight}
+      </p>
+
+      <button onClick={handler}>Cause re-render</button>
+    </>
+  );
+};
+```
+
+**output of the first render**
+
+```console
+ Step-1 
+ Step-2 
+Object {name: "Yang", weight: 165}
+ Step-3 
+Object {name: "Yang", weight: 165}
+step-4 
+ Step-5   
+ Step-6 
+Object {name: "Yang", weight: 166}
+inside effect Step-7 
+Object {name: "Yang", weight: 165}
+Object {name: "Yang", weight: 166}
+Effect is running 
+ Step-8 
+```
+
+**conclusion**:  
+
+execute all regular functions (not hooks) first in the order of they are called, then hooks in the order of they are called
+
+### 10. Deep Comparison
+
+```js
+const Test = () => {
+  const [user, setUser] = useState({ name: "Yang", weight: 165 });
+
+    // use container to avoid the case that undefined !== null or []
+  const usePrevious = (value, container) => {
+    console.log(" Step-1");
+    const ref = useRef();
+
+    useEffect(() => {
+      ref.current = value;
+      console.log(" Step-5");
+      console.log(ref.current);
+    }, [value]);
+
+    console.log(" Step-2");
+    console.log(ref.current);
+    return ref.current;
+  };
+
+  const previousUser = usePrevious(user);
+
+  console.log(" Step-3");
+  console.log(previousUser);
+
+  useEffect(() => {
+    console.log("inside effect Step-6");
+    console.log(previousUser);
+    console.log(user);
+    if (!isEqual(previousUser, user)) {
+      console.log("Effect is running");
+    }
+  });
+ 
+  console.log(" Step-4");
+  
+  const handler = () => {
+    setUser((prev) => {
+      return {
+        ...prev,
+        weight: Math.random() >= 0.5 ? prev.weight + 1 : prev.weight
+      };
+    });
+  };
+
+  return (
+    <>
+      <p>Current weight : {user.weight}</p>
+      {/* <p>
+        <b>refFromUseRef</b> value: {refFromUseRef.current}
+      </p> */}
+      <p>
+        <b>previous weight </b>:
+        {typeof previousUser !== "undefined" && previousUser.weight}
+      </p>
+
+      <button onClick={handler}>Cause re-render</button>
+    </>
+  );
+};
+
+```
+
+**part of output when weight increases to 166**:
+
+```
+ Step-5 
+Object {name: "Yang", weight: 166}
+inside effect Step-6 
+Object {name: "Yang", weight: 165}
+Object {name: "Yang", weight: 166}
+```
+
+we noticed that `ref.current`in the `usePrevious`.`useEffect` is updated to the **newer** version in which weight becomes **166**.  However, in the outside `useEffect`, `previousUser` is still the **old**  version in which weight is **165**.
+
+Inside `usePrevious` returns **old** version of state first, then call `useEffect` to update state but does not re-render, so `previousUser` is still the **old** version. But the **newer** version is there, it is just not rendered, the **newer** version will be returned when next change happens. In this way, `previousUser` always hold the previous version.
+
+But please note that, the initial state of `previousUser`will be `undefined`.
+
+### 11. Function inside vs outside `useEffect`
+
++ **bad example (confusion as well):**
+
+```js
+const State = () => {
+  const hello = () => console.log("hello");
+
+  useEffect(()=>{
+    hello();
+  }, [hello]);
+  return (
+    <Fragment>
+      <p> current value is {state}</p>
+      <button onClick={() => setState((prev) => prev + 1)}> Add </button>
+    </Fragment>
+  );
+};
+```
+
+Based on what I search online and look up the docs, `hello()` will be called infinitely due to new **object** of `hello` function is created every time re-render. **However** based on my test, `hello()` is only called once.
+
+**any way** for better practice:
+
+```js
+  const hello = useCallback(() => {
+    console.log("hello");
+  }, []);
+```
+
