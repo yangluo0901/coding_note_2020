@@ -715,3 +715,128 @@ Based on what I search online and look up the docs, `hello()` will be called inf
   }, []);
 ```
 
+### 10. Deploy a MERN app on Heroku
+
++ install `heroku`, --> `heroku login` --> `heroku create` --> `heroku git:remote -a <domain name>` now a `heroku` remote is added into the directory
+
++ add `.env` into `.gitignore`, go to `heroku` **dashboard** --> **settings** --> section **Config Vars**, add **key**s and  **value**s from `.env` into this section
+
++ **add right port**, we use a certain port for development, `heroku` will assign a port to the app, use code like  `const PORT = process.env.PORT || 5000;`
+
++ **specify node version**: add `"engines":{ "node": <version> }` into **backend** `package.json` below `"dependencies"`
+
++ **remove `nodemon`**: remove `nodemon` from `dependencies` if it is there
+
++ **build react app on` heroku`**: we need to build the react app into optimized version for production by using `npm run build`, after that `/client/build/index.html` will be generated, the `index.html` is the gateway for the react app. We can either `build` locally and push into `heroku` or write a script to `build` after pushing the app into heroku
+
+  `heroku-postbuild: "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"`, 
+
++ **add a Procfile**: add a file named `Procfile` that specifies how `heroku` runs the app. Write `web: node <server file name>` into the file. If `Procfile` is not specified, ` heroku` will run `start` script defined inside **backend** `package.json/scripts`. So make sure `"start"` command is defined in `package.json` file.
+
++ **config server to run react app on `heroku`**,  we configured how to run `server.js` , how to `build` react app on heroku, now we are going to configure how to connect the react APP to the backend. 
+
+  add code below into `server.js`
+
+  ```js
+  if (process.env.NODE_ENV === "production") {
+  	app.use(express.static("client/build")); // config static folder
+  	app.get("*", (req, res) => { // connect front end to backend
+  		res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+  	});
+  }
+  ```
+
+  
+
+### 12 . Select Component
+
++ install **`react-select`**
+
++ ```js
+  import select from "react-select";
+  
+  const Component = () => {
+      
+      // initialState is {} if it is a single select
+      const[selected, setSelected] = useState([]);
+      
+      onSubmit = (e) => {
+          e.preventDefault();
+          //...submit
+      }
+      
+      return 
+      <form onSubmit={onSubmit}>
+          <Select
+      		name="select"
+      		isMulti
+      		options={toBeSelected}
+      		value={selected}
+      		onChange={(selected) => setSelected(selected)}
+      	>
+          </Select>
+      </form>
+      
+  }
+  ```
+
+  the format of options is `{value:..., label:... }`, normally, `value` is the id of the item, `value` need to be extract from the form data in the backend.
+
+### 13. TinyMCE in React
+
++ install  `@tinymce/tinymce-react`
+
+```js
+import { Editor } from "@tinymce/tinymce-react";
+
+const Component = () => {
+    const setup = {
+		height: 500,
+		menubar: false,
+		plugins: [
+			"advlist autolink lists link image charmap print preview anchor",
+			"searchreplace visualblocks code fullscreen",
+			"insertdatetime media table paste code help wordcount",
+		],
+		toolbar:
+			"undo redo | formatselect | bold italic backcolor | \
+          alignleft aligncenter alignright alignjustify | \
+          bullist numlist outdent indent | removeformat | help",
+		textpattern_patterns: [
+			{ start: "*", end: "*", format: "italic" },
+			{ start: "**", end: "**", format: "bold" },
+			{ start: "__", end: "__", format: "bold" },
+			{ start: "`", end: "`", format: "code" },
+			{ start: "#", format: "h1" },
+			{ start: "##", format: "h2" },
+			{ start: "###", format: "h3" },
+			{ start: "####", format: "h4" },
+			{ start: "#####", format: "h5" },
+			{ start: "######", format: "h6" },
+			{ start: "1. ", cmd: "InsertOrderedList" },
+			{ start: "* ", cmd: "InsertUnorderedList" },
+			{ start: "- ", cmd: "InsertUnorderedList" },
+		],
+	};
+	
+	const[tinyContent, setContent] = useState("");
+
+    const editorHandler = (content, editor) => {
+        setContent(content)
+    }
+	return <form onSubmit={onSubmit}>
+        		<Editor
+					apiKey={apiKey}
+					init={setup}
+					value={tinyContent}	
+					onEditorChange={editorHandler}
+				/>
+        	</form>
+}
+
+```
+
+use `onEditorChange` to get **content** of the editor.
+
+
+
