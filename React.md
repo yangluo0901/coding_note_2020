@@ -768,10 +768,18 @@ Based on what I search online and look up the docs, `hello()` will be called inf
       return 
       <form onSubmit={onSubmit}>
           <Select
+      		style={{
+                     menuPortal: (base) => ({
+                         ...base,
+                         zIndex: 9999,
+                     }),
+  			}}
+  			menuPortalTarget={document.body}
+  			closeMenuOnSelect={false}
       		name="select"
       		isMulti
       		options={toBeSelected}
-      		value={selected}
+    		value={selected}
       		onChange={(selected) => setSelected(selected)}
       	>
           </Select>
@@ -779,8 +787,22 @@ Based on what I search online and look up the docs, `hello()` will be called inf
       
   }
   ```
-
+  
   the format of options is `{value:..., label:... }`, normally, `value` is the id of the item, `value` need to be extract from the form data in the backend.
+  
+  ```
+  style={{
+                     menuPortal: (base) => ({
+                         ...base,
+                         zIndex: 9999,
+                     }),
+  			}}
+  			menuPortalTarget={document.body}
+  ```
+  
+  is used to avoid the drop down menu overlapping by other components
+  
+  
 
 ### 13. TinyMCE in React
 
