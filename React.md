@@ -124,7 +124,7 @@ const myComponent = () = {
 }
  ```
 
-+ `useEffect` , it is called after the each render if no **dependency** array is not defined. If an empty **dependency** array is provided, `useEffect` is only revoked after the first render.
++ `useEffect` , it is called after the each render if no **dependency** array is defined. If an empty **dependency** array is provided, `useEffect` is only revoked after the first render.
 + `connect`, the `connect` function generates a wrapper component that subscribes to the store. When an action is dispatched, the wrapper component's callback is notified. It then runs `mapStateToProps` function and **shallow-compares** the result object at this moment against the previous result object, if results are different, then it passes the results to the component as props. <u>In one sentence, connect enables the component access store, compare states and update component by itself.</u>
 
 ### 4. How to fetch data to the component? Why component does not reflect update when update store from `useEffect` ?
@@ -259,7 +259,7 @@ add `files.length` as the dependency, every time the length changes, `useEffect`
 
 ```js
 console.log(" i am running first, but child's functions run earlier if there is any");
-console.log("i will  not be revoked if re-render");
+console.log("i will  not be called if re-render");
 const myComponent = ({ file:{files}, getFiles }) =>{
     
     useEffect(() ={
@@ -861,4 +861,55 @@ const Component = () => {
 use `onEditorChange` to get **content** of the editor.
 
 
+
+### 13. Highlight code block in React.js
+
++ we will use **highlight.js**, `npm install highlight.js`
++ use code:
+
+```js
+import React, { useEffect } from "react";
+import hljs from "highlight.js";
+import "highlight.js/styles/github.css";
+
+const Highlight = () => {
+  useEffect(() => {
+    // Prism.highlightAll();
+    updateCodeSyntaxHighlighting();
+  });
+
+  const updateCodeSyntaxHighlighting = () => {
+    document.querySelectorAll("pre code").forEach((block) => {
+      hljs.highlightBlock(block);
+    });
+  };
+  const code = `
+  lets see the code below:
+  <pre>
+  <code>
+  const MemoChild = ({ value, name }) => {
+    const veryHeavyCalculation = () => {
+      console.log("veryHeavyCalculation is triggered");
+      return "result ---   " + value;
+    };
+    const result = veryHeavyCalculation();
+    console.log("rendering " + name);
+    return <p>{result}</p>;
+  };
+  </pre>
+  </code>
+  When we click the "component 1 event" button, counter1 increments by 1, React re-renders MemoCompo .
+
+  `;
+
+  return (
+    <div
+      dangerouslySetInnerHTML={{
+        __html: code
+      }}
+    />
+  );
+};
+
+```
 
