@@ -862,7 +862,7 @@ use `onEditorChange` to get **content** of the editor.
 
 
 
-### 13. Highlight code block in React.js
+### 14. Highlight code block in React.js
 
 + we will use **highlight.js**, `npm install highlight.js`
 + use code:
@@ -913,3 +913,50 @@ const Highlight = () => {
 
 ```
 
+### 14. Syntax Highlighting Code Snippets
+
+We are going to use **highlight.js** here.
+
++ go into the react app folder, install **hightlight.js** `npm install hightlight.js`
++ sample code:
+
+```js
+import React, { Fragment, useEffect } from "react";
+import hljs from "highlight.js";
+import "highlight.js/styles/atom-one-dark-reasonable.css";
+
+const PostContent = ({ content }) => {
+	useEffect(() => {
+		updateCodeSyntaxHighlighting();
+	});
+
+	const updateCodeSyntaxHighlighting = () => {
+		document.querySelectorAll("pre code").forEach((block) => {
+			hljs.highlightBlock(block);
+		});
+	};
+
+	return (
+		<Fragment>
+			<div className="row post-content">
+				{content !== null && (
+					<div
+						className="main-body"
+						dangerouslySetInnerHTML={{
+							__html: content,
+						}}
+					/>
+				)}
+			</div>
+		</Fragment>
+	);
+};
+
+export default PostContent;
+```
+
+`useEffect` here to ensure code block is re-formatted every time page is re-loaded
+
+`dangerouslySetInnerHTML={{__html:content}}` is used to make app to render html tags. Please make sure sanitize **content** before being written into the database for security purpose.
+
+`updateCodeSyntaxHightlighting` is to search all code samples and format them. 

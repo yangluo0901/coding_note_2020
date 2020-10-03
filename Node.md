@@ -294,3 +294,62 @@ statusText: "OK"
 __proto__: Object
 ```
 
+### 6. upload file to Google cloud
+
+#### Prepare Google Cloud
+
++ go to google cloud, create a new project called "tutorial", select "tutorial" as the current project from the navbar 
++ Create a service account for the project, search "service account", click "create service account", set "Storage Admin" as the role
++ Create credential, click "create key", and select "json" type,  to generate and download the key for verification, copy this key file to the project directory, in my case, the root of the project directory
++ select "Storage", and create a new bucket, config: **Location type**: multi-region; **default storage class**: standard; **access to objects**: Fine-grained
++ change the public access of the bucket to " Public to internet";
+
+#### Express
+
+We are going to use `multer` to store file or files into `file`/`files` object in `req`. So that the text data will be store in`body` object and file data will be store in `file`/`files`, for more info about `multer`: https://www.npmjs.com/package/multer
+
+```js
+const multer = require("multer");
+const upload = new multer();// we can define the saved location if store file locally
+const router = express.Router();
+const {Storage} = require("@google-cloud/storage"); // get the access from google cloud
+
+//connect to the storage
+const storage = new Storage({
+    keyFileName: path.join(__dirname, "you key file path relative to current file"),
+    projectId: "tutorial-291022"
+});
+
+// get the bucket by the bucket name
+const bucket = storage.bucket("tutorial");
+
+router.post("/post_file", [upload.any()], async (req, res) => {
+    //upload.any() will take any file data
+    try{
+        const {originalname, buffer} = req.files[0]; 
+        // save the file into the specific folder in the cloud
+        // create a file object
+        const file = bucket.file(`<folder name>/${originalname}`); 
+        
+        // create a input stream to the file object in order to write to the file
+        const fileStream  = file.createWriteStream();
+        
+        // write the uploaded file (buffer in this case) into the file object at the end
+        fileStream.end(buffer);
+        
+        //  finish event: occurs after "end" event and ready to close the stream
+        fileStream.on("finish", async() => {
+            const url = 			`https://storage.googleapis.com/<folderName>/${bucket.name}/${file.name}`;
+            // save the url into database
+            const user = await User.findById (req.user.id);
+            user.avatar = url;
+            await user.save();
+            return res.json({message: "avatar uploaded!"})
+        })
+    }catch(err){
+        ... // handle error
+    }
+})
+
+```
+
