@@ -1,5 +1,48 @@
 # React.js
 
+
+
+
+
+## Basics of REACT
+
+#### 1. What is React, why it is popular?
+
++ it is a **Front End JavaScript** libarary (frame work), it is all about **Modulize**
++ it combines **HTML**, **CSS**, **JS**  together to form different **components** that can be **reused** by change attribute. For example: there is a list of houses information in Zillow, the frame of each list item is same like picture, name, address, price, etc. Then by using **React**, we can make a **ListItem** component which has attributes `picture`, `name`, `address`,  and`price`, we can fetch data from database, and loop through each entry and inject each entry to the **ListItem**
++ Each **Component** is able to update **state** (change data on the web page or update database ) by itself without refresh entire page to reflect changes.
+
+#### 2. Babel
+
+Babel is a **compiler** that convert next generation JavaScript into the version that all browsers can understand.
+
+#### 3. ES6
+
+**ECMAScript** is a [general-purpose programming language](https://en.wikipedia.org/wiki/General-purpose_programming_language), standardised by [Ecma International](https://en.wikipedia.org/wiki/Ecma_International) according to the document [ECMA-262](https://www.ecma-international.org/publications/standards/Ecma-262.htm). It is a [JavaScript](https://en.wikipedia.org/wiki/JavaScript) standard meant to ensure the interoperability of Web pages across different Web browsers.[[2\]](https://en.wikipedia.org/wiki/ECMAScript#cite_note-2) ECMAScript is commonly used for [client-side scripting](https://en.wikipedia.org/wiki/Client-side_scripting) on the [World Wide Web](https://en.wikipedia.org/wiki/World_Wide_Web), and it is increasingly being used for writing server applications and services using [Node.js](https://en.wikipedia.org/wiki/Node.js).
+
+#### 4. JSX
+
+It stands for **JavaScript XML**, it allows us to create element and add element in REACT easier,  it allows us to write HTML elements in JavaScript and place them in the DOM without any `createElement()` and/or `appendChild()`
+
+**Without JSX**
+
+```javascript
+const element = document.createElement("h1");
+h1.innerHTML="Hello World"
+document.body.appendChild(h1);
+```
+
+**With JSX**
+
+```JSX
+const element = <h1>Hello world</h1>;
+ReactDom.render(element, document.getElementById("root"));
+```
+
+
+
+
+
 ## Troubleshooting:
 
 #### 1. Error: `react-scripts not found`  after `npm install`:

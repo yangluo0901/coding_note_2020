@@ -1,6 +1,6 @@
 # Data type and structure
 
-### Reference type vs Primitive type
+#### <u>Reference type vs Primitive type</u>
 
 + **Primitive type**: `boolean`, `char`, `byte`, `short`, `int`, `long`, `float` and `double`. 
   + Memory location stores **actual data** held by the primitive type. 
@@ -99,6 +99,94 @@ Before, string: hello
 2065530879
 2065530879
 After, string: hello world!
+
+```
+
+#### <u>Abstract Class vs Interface</u>
+
+
+
+
+
+#### <u>Singleton Pattern</u>
+
+```java
+Class Singleton{
+  private static Singleton _instance = null;
+  private Singleton(){};
+  public static Singleton getInstance(){
+		if(_instance == null){
+      _instance = new Singleton();
+    }
+    return _instance;
+  }
+}
+```
+
+
+
+#### <u>final, finally, and finalize</u>
+
+**final**:
+
++ variable
++ class
++ Method
+
+**finally** used with a `try/catch/block` and guarantees that a section of code will be executed, even if an exception is thrown. The finally block will be executed after the try and catch blocks, but before control transfers back to its origin
+
+**finalize** the automatic garbage collector calls the finalize()  just before actually destroying the object
+
+```java
+protected void finalize() throws Throwable{
+	...
+}
+```
+
+
+
+#### <u>Generics in Java</u>	
+
+The idea is to allow types (Integer, String, Boolean,...) to be a parameter to methods, class and interfaces. Using generic, it is possible to create class and methods that work with different data types.
+
+**generic class**
+
+```java
+class Test<T> 
+{ 
+    // An object of type T is declared 
+    T obj; 
+    Test(T obj) {  this.obj = obj;  }  // constructor 
+    public T getObject()  { return this.obj; } 
+} 
+   
+// Driver class to test above 
+class Main 
+{ 
+    public static void main (String[] args) 
+    { 
+        // instance of Integer type 
+        Test <Integer> iObj = new Test<Integer>(15); 
+        System.out.println(iObj.getObject()); 
+   
+        // instance of String type 
+        Test <String> sObj = 
+                          new Test<String>("GeeksForGeeks"); 
+        System.out.println(sObj.getObject()); 
+    } 
+}
+```
+
+**generics method:**
+
+```java
+public static < T > void printArray( T[] inputArray ) {
+      // Display array elements
+      for(T element : inputArray) {
+         System.out.printf("%s ", element);
+      }
+      System.out.println();
+   }
 
 ```
 
