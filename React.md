@@ -39,9 +39,476 @@ const element = <h1>Hello world</h1>;
 ReactDom.render(element, document.getElementById("root"));
 ```
 
+#### 5. Create React App
+
+`npx create-react-app <app name>`
+
+if we look at `package.json` there is one section in which `start: "react-scripts start"` tells us `npm start` will run the app.
+
+```json
+ "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  }
+```
 
 
 
+#### 6. render elements on page
+
++ render html element in React page, please note that the **elements has to be wrapped** to be a entire element, in the code below, `h1` and `h2` are wrapped up by `div`.
++ apply **.css** file or apply **inline style** attributes
+  + directly import **.css** file with the path
+  + **inline Style** has to be a javascript object. **Whenever we want to place  JS varaibles in HTML tags, we need to place them in `{}`**  
+
+```jsx
+import ReactDOM from "react-dom";
+import "./style.css";
+
+const myStyle = {color: "red"};
+
+ReactDOM.render(
+  <div>
+  	<h1 style={myStyle}>HELLO WORLD!</h1>
+    <h2 style={{color: "blue"}}> basics of react</h2>
+ 	</div>,
+document.getElementById("root")
+);
+```
+
+#### 7. HTML element along with some JS
+
+```jsx
+import ReactDOM from "react-dom";
+import "./styles.css";
+ 
+
+const myStyle = {color: "red"};
+const curTime = (new Date(2021, 1, 1, 19)).getHours();
+
+let greeting;
+
+if(curTime < 12){
+  greeting = "Good Morning";
+}else if(curTime < 18){
+  greeting = "Good Afternoon";
+}else{
+  greeting = "Good Night";
+}
+
+ReactDOM.render(
+  <div>
+    <h1 className="heading" style={myStyle}>{greeting}</h1>
+  </div>,
+  document.getElementById("root")
+);
+```
+
+#### 8. A simple Component
+
+The core part of **React.js** is **Component**, we create a component by creating a function with capitalized name. Here in order to modulize files, we have three files here: 
+
++ `Heading.js`, the costomized `Heading` component
++ `App.js`, the basket that collects and combines all components together 
++ `index.js`,  the manager that insert `App` into the page.
+
+```jsx
+// in Heading.js file
+import React from "react"; // so react can convert jsx into real js
+
+const Heading = () => {
+  const myStyle = {color: "red"};
+  const curTime = (new Date(2021, 1, 1, 19)).getHours();
+
+  let greeting;
+
+  if(curTime < 12){
+    greeting = "Good Morning";
+  }else if(curTime < 18){
+    greeting = "Good Afternoon";
+  }else{
+    greeting = "Good Night";
+  }
+  return <h1>{greeting}</h1>
+}
+
+export default Heading;
+
+// in App.js file
+import ReactDOM from "react-dom";
+import Heading from "./Heading";
+
+const App = () => {
+  return(
+  	  <div>
+    		<Heading />
+  		</div>
+  )
+};
+
+
+// in index.js file
+import ReactDOM from "react-dom";
+import App from "./App";
+
+ReactDom.render(<div><App/></div>, document.getElementById("root"));
+
+```
+
+#### 9. Export/Import module in ES6
+
+if `export default ComponentA`, then `import ComponentA from "./Comopnent"`, because there might be **multiple** component in the `Component.js` file, if we use `default` keyword, React.js would know `ComponentA` will be the one to be imported, in this way, we can name `ComponentA` the name we want, such as `import DifferentName from "./Comopnent"`. 
+
+We can use the simpler export if we have only one function/Component in the file:
+
+```jsx
+export default function App() {
+  return (
+    <div className="App">
+      <Heading />
+    </div>
+  );
+}
+```
+
+While if we want to export/import multiple modules, `export {ComponentA, ComponentB, ComponentC}` then we need to specify which components will be imported, `import {ComponentA, ComponentC} from "./Component"`, here **names have to consistent with names in the export file.**
+
+
+
+#### 10. `props`
+
+Let's say we want to render a list of item, each item are similar except for value for each item then we can use `props` of the `Item` component, in the parent component, inject value into `props` and in the `Item` component accept those props.
+
+```jsx
+// in the List.js file
+const List = ({items}) => { // items is an array of information
+    return (
+        <div className="List">
+        	{items !== null &&
+                items.length !== 0 &&
+                items.map((item) => {
+                    return (
+                        <Item
+                            name={item.name}
+                            src={item.src}
+                            phone={item.phone}
+                            email={item.email}
+                        />
+                    );
+        	})}
+        </div>
+    );
+}
+
+// in the Item.js file
+
+const Item = (props) => {
+    const { name, src, phone, email } = props; // deconstruct
+    return (
+        <div>
+            <h2>{name}</h2>
+            <img src={src} alt={`${name}.png`} />
+            <p>{phone}</p>
+            <p>{email}</p>
+        </div>
+    );
+};
+export default Item;
+```
+
+#### 11. Arrow Function
+
+let's say given an array, we want to double each element, without arrow function, we might end up with
+
+```js
+const nums = [1, 2, 3, 4];
+
+function double(x) {
+  return x * 2;
+}
+
+const result = nums.map(double);
+
+console.log(result);
+```
+
+Let's make it simpler by creating `double` function in side `map` function
+
+```js
+const result = nums.map(function double(x) {
+  return x * 2;
+});
+```
+
+Even more simpler by using anonymous function ( no function name):
+
+```js
+const result = nums.map(function (x) {
+  return x * 2;
+});
+```
+
+ok, lets remove keyword `function` as well, but add a arrow `=>` to indicate it is a method
+
+```js
+const result = nums.map((x) => {
+  return x * 2;
+});
+```
+
+if there is only one input argument, we then can remove pranthese, please note that `()` is needed if there are more than 1 input arguments:
+
+```js
+const result = nums.map(x => {
+  return x * 2;
+});
+```
+
+Can we make it even shorter? YES! If there is only one line code in the function, we can even remove curly braces.
+
+```js
+const result = nums.map((x) => x * 2);
+```
+
+#### 12. Ternary Expression
+
+`condition ? do if true : do if false`
+
+```js
+function App() {
+  return (
+    <div>
+      {isLoggedIN ? <h1>Hello</h1> : <Login/>}
+    </div>
+  );
+}
+```
+
+What if we do not want to do anything if it is false
+
+`condition && do if true`
+
+```js
+function App() {
+  return (
+    <div>
+      {isLoggedIN && <h1>Hello</h1>} // return <h1> if true, and do nothing if false
+    </div>
+  );
+}
+```
+
+#### 13. State
+
+This is core concept of React.js, make it simple: how does the UI change when the parameters change. It does not like **imperative programming** ( giving instructions step by step to tell computer how to do), it tells the computer what to do without touch DOM element, **declarative programming**.
+
+Imperative Programming Example: every time we click button, we change the DOM element
+
+```js
+function strike() {
+  document.getElementById("root").style.textDecoration = "line-through";
+}
+
+function strike() {
+  document.getElementById("root").style.textDecoration = null;
+}
+function App() {
+  return (
+    <div>
+      <p>Buy milk</p>
+      <button onClick={strike}>Change to strike through</button>
+      <button onClick={unStrike}>Change back</button>
+    </div>
+  );
+}
+
+
+```
+
+Declarative Programming Example, instead of change the property of the DOM each time, here we change the condition `isDone`, **but the code below does not work, why?** since the DOM is rendered, even `isDone` changes after rendering, the element won't reflect the change. DOM elment has to be rendered. **Hook** comes here to be the solution, basically it is a function that hooks into the state of the app and allow us to view and modify it.
+
+```react
+var isDone = false;
+
+function strike() {
+  isDone = true;
+}
+
+function unStrike() {
+  isDone = false;
+}
+
+function App() {
+  return (
+    <div>
+      <p style={isDone ? { textDecoration: "line-through" } : null}>Buy milk</p>
+      <button onClick={strike}>Change to strike through</button>
+      <button onClick={unStrike}>Change back</button>
+    </div>
+  );
+}
+
+```
+
+#### 14. `useState`
+
+`const[state, setState] = useState(initialState)`
+
+```react
+import React, { useState } from "react";
+
+function App() {
+  const [count, setState] = useState(1);
+  
+  const click = ()=>{
+    setState(count + 1);
+  }
+  return (
+    <div className="container">
+      <h1>{count}</h1>
+      <button onClick={click}>+</button>
+    </div>
+  );
+}
+```
+
+#### 15. Handle with form
+
+Here is a simpler way to handle multiple inputs. Note that we use `[name]` to access properties by **key variables**
+
+```react
+function App() {
+  const [contact, setContact] = useState({});
+  const changeHandler = (e) => {
+    const { name, value } = e.target; // handle event object out of setContact is better
+    setContact({
+      ...contact,
+      [name]: value // change value of the property based the key variable
+    });
+  };
+  return (
+    <div className="container">
+      <h1>
+        Hello {contact.fName} {contact.lName}
+      </h1>
+      <p>{contact.email}</p>
+      <form>
+        <input name="fName" placeholder="First Name" onChange={changeHandler} />
+        <input name="lName" placeholder="Last Name" onChange={changeHandler} />
+        <input name="email" placeholder="Email" onChange={changeHandler} />
+        <button>Submit</button>
+      </form>
+    </div>
+  );
+}
+```
+
+#### 16 Allow child element access the variable in the parent
+
+Let's say a simple todo list app below, we add the one item into the todo list when we press "add" button, and delete the item from the todo list if we click the item. We present each item in the child element `ToDoList`, how do we modify `items` in `App` component from `ToDoList` ?
+
+For sure we can modify `items` from `App` by using function `setItems`, so we can pass this function to `ToDoList`, every time the item is clicked, `setItems` is called from `ToDoList`.
+
+```react
+const App = () => {
+  const [inputText, setText] = useState("");
+  const [items, setItems] = useState([]);
+	<div className="form">
+    <input onChange={handleChange} type="text" value={inputText} />
+    <button onClick={setItems([
+        ...items,
+        inputText
+      ])}>
+      <span>Add</span>
+    </button>
+  </div>
+  <div>
+    <ul>
+      {items.map((todoItem, index) => (
+        <ToDoItem key={index} id={index} item={todoItem} onChecked={checkItem}/>
+      ))}
+    </ul>
+  </div>
+}
+
+// in the ToDoItem.js
+
+const ToDoItem = ({ item, onChecked, id }) => {
+  return <li onClick={() => onChecked(id)}>{item}</li>;
+  // cannot use return onClick={onChecked(id)} because onChecked(id) will be called
+  // immediately when render <li> element instead of waiting for the click event
+};
+
+export default ToDoItem;
+```
+
+
+
+
+
+
+
+## Tricky Stuff
+
+#### 1. `filter` vs `map` vs `reduce` vs `find` vs `findIndex`
+
++ `filter`, just like what the name indicates, it filter some element out based on the criteria. This function **accepts a function** which check each element in the array against something, if it is true, the element is kept in the new array, otherwise, discard. It **returns a** **new array**
+
+  ```js
+  const number = [1, 2, 3, 4];
+  
+  const filter = number.filter(num => num % 2 === 0);
+  
+  console.log(filter);
+  //output; 
+  [2, 4]
+  ```
+
++ `map` accepts a **function**, and **return** a new array by doing something with each element in the array
+
+  ```js
+  const number = [1, 2, 3, 4]
+  
+  const new_arr = number.map((num) => {
+    return num *2;
+  });
+  
+  console.log(new_arr);
+  // output:
+  [2, 4, 6, 8]
+  ```
+
++ `reduce`, just like accumulator, add each element up and **return a new number**, it **reduce** an array into a single value
+
+  ```js
+  const number = [1, 2, 3, 4];
+  
+  const reduce = number.reduce((accumulator, num) =>{
+    return accumulator += num;
+  })
+  
+  console.log(reduce);
+  //output: 
+  10
+  ```
+
++ `find`, finds the first match in an array, the difference with `filter` is that `find` **stops** once find a match.
+
+  ```js
+  const number = [1, 2, 3, 4];
+  
+  const find = number.find((num) => {
+    return num % 2 === 0;
+  });
+  
+  console.log(find);
+  //output
+  2
+  ```
+
++ `findIndex`, however finds the index of the first match.
 
 ## Troubleshooting:
 
@@ -324,16 +791,16 @@ const mapStateToProps = state =>({
 })
 ```
 
-### 6. Understand `useState`
+### 6. Understand `useState`(needs to be completed!!!)
 
 ```js
-export default function App() {
+export default function App() { 
   let text = "";
   console.log("render .......");
   const changeHandler = (e) => {
     console.log(e.target.value);
+    console.log(e.target.defaultValue)
     text = e.target.value;
-    console.log(text);
   };
   return (
     <div className="App">
@@ -343,7 +810,17 @@ export default function App() {
 }
 ```
 
-when we type in "a b c", console result is `render ...   a a b b c c`, value in the `input` does not change,  `value` attribute in the `input` is empty
+when we type in "a", console result is 
+
+```
+render ....... 
+
+a 
+
+"" 
+```
+
+Here, with uncontorlled element, `value` attribute will be overrided by whatever typed in the input. To make controlled element work, React brings another attribute `defaultValue`,
 
 **<u>findings :</u>**
 

@@ -1,3 +1,25 @@
+# Node.js Note
+
+### Install and Update
+
+#### 1. install Node.js
+
++ install from Node.js offical website
++ `brew install node`
+
+#### 2. Update Node.js
+
+we use `n`, a useful Node version manager
+
++ install `n` by using `npm`: `npm install -g n`
++ install different version of `node.js` : `n <version-number>`, or `n latest` to get the latest version
+
+#### 3. Update NPM
+
+`sudo npm install -g npm@latest` 
+
+
+
 ### <u>1. Authentication with Passport</u>
 
 * **additional packages required** :
