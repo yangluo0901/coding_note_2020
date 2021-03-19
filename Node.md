@@ -375,3 +375,27 @@ router.post("/post_file", [upload.any()], async (req, res) => {
 
 ```
 
+#### 7. Github OAuth API
+
+use github OAuth app to authorize your app and get access to your repos
+
++ go to you github -> settings -> developer settings -> Personal access tokens-> generate new token, copy this token into `.env` file
++ in express. js file
+
+```js
+try {
+		const uri = encodeURI(
+			`https://api.github.com/users/${req.params.username}/repos?per_page=5&sort=created:asc`
+		);
+		const headers = {
+			"user-agent": "node.js",
+			Authorization: `token ${process.env.GITHUBTOKEN}`,
+		};
+		const githubRes = await axios.get(uri, { headers });
+		return res.json(githubRes.data);
+	} catch (error) {
+		console.error(error);
+		res.status(500).send("Server Error!");
+	}
+```
+
