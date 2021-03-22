@@ -36,4 +36,6 @@
        after cherry-pick E :  --A--B--C--D--E   master
        			  |--E--F--G
 
-   ​				
+6. **ignore `Icon?` File**
+
+  open `.gitignore` with `vim`, insert `Icon[^M]` by `Icon[` followed by `ctrl` `v` then `]`.

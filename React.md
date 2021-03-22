@@ -405,6 +405,35 @@ function App() {
 }
 ```
 
+
+
+## Basics of Redux
+
+#### 1. Provider
+
+the ` <Provider>` component makes the Redux `store` availble to any nested components that need to access the Redux Store.
+
+```react
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { Provider } from 'react-redux'
+
+import { App } from './App'
+import createStore from './createReduxStore'
+
+const store = createStore()
+
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById('root')
+)
+
+```
+
+
+
 #### 16 Allow child element access the variable in the parent
 
 Let's say a simple todo list app below, we add the one item into the todo list when we press "add" button, and delete the item from the todo list if we click the item. We present each item in the child element `ToDoList`, how do we modify `items` in `App` component from `ToDoList` ?
@@ -444,9 +473,85 @@ const ToDoItem = ({ item, onChecked, id }) => {
 export default ToDoItem;
 ```
 
+#### 17. React-Redux lifecycle.
+
++ React component only re-renders when state of variable changes (useState) if this component is not connected to Redux store. 
+
++ If a component connects to the Redux store, then it will re-render when state of variables changes and state of store changes.
+
++ Reducers initialized first before store creating.
+
++ Lifecycle below:
+
+  <img src="images/react_redux_lifecycle.png" alt="react_redux_lifecycle" style="zoom: 40%;" />
+
+  
 
 
 
+#### 18. Private Component
+
+Let'say we want to use `<PrivateRoute>` that only can be accessed on conditions, such as logged in user.
+
+For example:  `<PrivateRoute path="/dashboard" component={Dashboard}/>`
+
+In the `PrivateRoute` function , `props` receives all attributes in the `<PrivateRoute/>` such as `path`, `component`. So we deconstruct the `props` into
+
+`{component: Component ,auth: { isAuthenticated, loading }, ...rest}`
+
+where, `...rest` would hold other props other than `component` and `auth`
+
+`render` attibute function accepts a function which returns the component we want to render
+
+Example of `render`:
+
+`<Route path="/home" render={() => <div>Home</div>} />`
+
+```react
+<Route
+      {...rest}
+      render={routeProps => (
+        <FadeIn>
+          <Component {...routeProps} />
+        </FadeIn>
+      )}
+ />
+```
+
+**Complete Code:** 
+
+```react
+const PrivateRoute = ({
+    component: Component ,
+    auth: { isAuthenticated, loading },
+    ...rest
+}) => {
+    return (
+        <Route
+            {...rest}
+            render={(props) =>
+                loading ? (
+                    <Spinner />
+                ) : isAuthenticated ? (
+                    <Component {...props} />
+                ) : (
+                    <Redirect to="/login" />
+                )
+            }
+        />
+    );
+};
+
+PrivateRoute.propTypes = {
+    auth: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+    auth: state.auth,
+});
+export default connect(mapStateToProps)(PrivateRoute);
+
+```
 
 
 
@@ -1005,7 +1110,7 @@ export default function App() {
     return value2 * 1.1;
   };
 
-  const another = useMemo(veryHeavyCalculation, [value2]);
+  const another = useCallback(veryHeavyCalculation, [value2]);
 
   console.log("rendering .....");
   return (
@@ -1136,7 +1241,7 @@ const Test = () => {
     const ref = useRef();
 
     useEffect(() => {
-      ref.current = value;
+      ref.current = value; // previousUser does not change
       console.log(" Step-5");
       console.log(ref.current);
     }, [value]);
@@ -1199,11 +1304,36 @@ Object {name: "Yang", weight: 165}
 Object {name: "Yang", weight: 166}
 ```
 
-we noticed that `ref.current`in the `usePrevious`.`useEffect` is updated to the **newer** version in which weight becomes **166**.  However, in the outside `useEffect`, `previousUser` is still the **old**  version in which weight is **165**.
+**first of all**, `let ref = obj1; cur = ref;`, here `cur` points to `obj1` instead of pointing to `ref` itself.
 
-Inside `usePrevious` returns **old** version of state first, then call `useEffect` to update state but does not re-render, so `previousUser` is still the **old** version. But the **newer** version is there, it is just not rendered, the **newer** version will be returned when next change happens. In this way, `previousUser` always hold the previous version.
+```js
+const Test = () => {
+  const obj1 = {
+    name: "hello"
+  };
+  const obj2 = {
+    name: "world"
+  };
 
-But please note that, the initial state of `previousUser`will be `undefined`.
+  let cur = {};
+  let ref = obj1; // ref has the reference to obj1
+  cur = ref; // cur has the reference to obj1 instead of reference to ref
+  console.log(cur); // {name: "hello"}
+  ref = obj2; // now ref points to obj2, cur still points obj1
+  console.log(cur); // {name: "hello"}
+  return <p>this is testing</p>;
+};
+```
+
+Now, we know that in `usePrevious`, when `ref.current = value;`, `previousUser` does not change. In this way, update of `previousUser` is always delayed.
+
+`useRef` does not change even we re-run `const ref = useReft()` when re-render.
+
+Basically, in `usePrevious`, it returns old value before running `useEffect `(the one inside `usePrevious`) which update `ref`
+
+Example: `ref.current = 165`, state change, weight becomes 165, --> re-render -->`usePrevious` return current `ref` which is 165 
+
+--> run rest of nomal code ---> run  `useEffect `(the one inside `usePrevious`) update `ref`, now `ref.current = 166`, but it does not return to `previousUser`, `previousUser` is still 165 -->  `useEffect `(the one inside `Test`) runs, compare `previousUser`(165) against current value 166.
 
 ### 11. Function inside vs outside `useEffect`
 
