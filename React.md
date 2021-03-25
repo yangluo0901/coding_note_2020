@@ -556,7 +556,7 @@ function App() {
 
 the ` <Provider>` component makes the Redux `store` availble to any nested components that need to access the Redux Store.
 
-```react
+```js
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
