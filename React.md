@@ -329,7 +329,7 @@ function App() {
 
 Declarative Programming Example, instead of change the property of the DOM each time, here we change the condition `isDone`, **but the code below does not work, why?** since the DOM is rendered, even `isDone` changes after rendering, the element won't reflect the change. DOM elment has to be rendered. **Hook** comes here to be the solution, basically it is a function that hooks into the state of the app and allow us to view and modify it.
 
-```react
+```javascript
 var isDone = false;
 
 function strike() {
@@ -356,7 +356,7 @@ function App() {
 
 `const[state, setState] = useState(initialState)`, React re-render the component every time the state changes, in the code below, `count`. if use `setState(1)`, the `count` is always 1, then re-render won't occur.
 
-```react
+```js
 import React, { useState } from "react";
 
 function App() {
@@ -379,7 +379,7 @@ Please note that **<u>React does not do not deep compare state</u>**, that being
 
 if we use `setData(initialData)`, same result, only render once, no re-render
 
-```react
+```js
 export default function App() {
   console.log("rendering...");
 
@@ -401,7 +401,7 @@ rendering... // first render, no more
 
 But in the example below, component re-renders everytime I click the button, that is because that even `data` and `{name: "Yang"}` have same key and value, but the `data`  has different reference with `{name: "Yang"}`
 
-```react
+```js
 export default function App() {
   console.log("rendering...");
 
@@ -445,7 +445,7 @@ While **B**, due to different reference, `useEffect` runs when click the button.
 
 **A**
 
-```react
+```js
 export default function App() {
   console.log("rendering...");
 
@@ -521,7 +521,7 @@ inisde useEffect
 
 Here is a simpler way to handle multiple inputs. Note that we use `[name]` to access properties by **key variables**
 
-```react
+```js
 function App() {
   const [contact, setContact] = useState({});
   const changeHandler = (e) => {
@@ -583,7 +583,7 @@ Let's say a simple todo list app below, we add the one item into the todo list w
 
 For sure we can modify `items` from `App` by using function `setItems`, so we can pass this function to `ToDoList`, every time the item is clicked, `setItems` is called from `ToDoList`.
 
-```react
+```javascript
 const App = () => {
   const [inputText, setText] = useState("");
   const [items, setItems] = useState([]);
@@ -650,7 +650,7 @@ Example of `render`:
 
 `<Route path="/home" render={() => <div>Home</div>} />`
 
-```react
+```javascript
 <Route
       {...rest}
       render={routeProps => (
@@ -663,7 +663,7 @@ Example of `render`:
 
 **Complete Code:** 
 
-```react
+```js
 const PrivateRoute = ({
     component: Component ,
     auth: { isAuthenticated, loading },
