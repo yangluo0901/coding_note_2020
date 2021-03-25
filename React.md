@@ -354,7 +354,7 @@ function App() {
 
 #### 14. `useState`
 
-`const[state, setState] = useState(initialState)`
+`const[state, setState] = useState(initialState)`, React re-render the component every time the state changes, in the code below, `count`. if use `setState(1)`, the `count` is always 1, then re-render won't occur.
 
 ```react
 import React, { useState } from "react";
@@ -372,9 +372,152 @@ function App() {
     </div>
   );
 }
+
 ```
 
-#### 15. Handle with form
+Please note that **<u>React does not do not deep compare state</u>**, that being said, <u>it compares well for primitive type such as int and boolean, but for array and object, React compare their reference.</u> Look at the example below, the compoment does not re-render if I click button, `data === data`, same reference.
+
+if we use `setData(initialData)`, same result, only render once, no re-render
+
+```react
+export default function App() {
+  console.log("rendering...");
+
+  const initialData = {
+    name: "Yang"
+  };
+  const [data, setData] = useState(initialData);
+  return (
+    <div className="App">
+      <h1>Hello CodeSandbox</h1>
+      <h2>{data.name}</h2>
+      <button onClick={() => setData(data)}>Click Me</button>
+    </div>
+  );
+}
+// output:
+rendering... // first render, no more
+```
+
+But in the example below, component re-renders everytime I click the button, that is because that even `data` and `{name: "Yang"}` have same key and value, but the `data`  has different reference with `{name: "Yang"}`
+
+```react
+export default function App() {
+  console.log("rendering...");
+
+  const initialData = {
+    name: "Yang"
+  };
+  const [data, setData] = useState(initialData);
+  return (
+    <div className="App">
+      <h1>Hello CodeSandbox</h1>
+      <h2>{data.name}</h2>
+      <button
+        onClick={() => setData({ name: "Yang" })}
+      >
+        Click Me
+      </button>
+    </div>
+  );
+}
+//output
+rendering...
+rendering...
+rendering...
+```
+
+
+
+#### 15. useEffect
+
+`useEffect` allows us call function after performing the DOM update, it is called **effect**, it runs after each render, if **dependencies** are not defined.
+
+We can tell React to skip applying an effect if cetain values haven't changed between re-renders,to do so, pass a **dependecies array** as an optional scecond argument to` useEffect`. `useEffect` only runs when dependencies change between re-renders.
+
+We can pass in a empty array, so that `useEffect` will not listen to change of any dependencies and only run once.
+
+As I mentioned in the in the  [useState](#14. `useState`) section, **React compares object by reference**, see below two expamples, in the **exmaple A**, re-render occurs due to `setData({name: "Yang"})`, due to dependency of the `useEffect` does not change between to re-render, the **useEffect does not run** when I click button.
+
+While **B**, due to different reference, `useEffect` runs when click the button.
+
+**There is one difference with useState**, if we use `setData1(initialData)`, `useEffect` won't run for the first click, but runs for each click after that. That is because in before the first click, the `initialStata`(lets call it `#a`) in  `setData1(initialData)` is the same one as the one(lets call it `#b`) declared at the start of the component, `#a ===#b`, **while, after re-render, `#b` is re-created**, a new object(lets call it `#c`), `#a !== #c`
+
+**A**
+
+```react
+export default function App() {
+  console.log("rendering...");
+
+  const initialData = {
+    name: "Yang"
+  };
+  const [data, setData] = useState(initialData);
+  const [data1, setData1] = useState(initialData);
+  useEffect(() => {
+    console.log("inisde useEffect");
+  }, [data1]);
+  return (
+    <div className="App">
+      <h1>Hello CodeSandbox</h1>
+      <h2>{data.name}</h2>
+      <button
+        onClick={() => {
+          setData({ name: "Yang" }); // to make component re-render
+          setData1(data1); // same object
+        }}
+      >
+        Click Me
+      </button>
+    </div>
+  );
+}
+//output:
+rendering...
+rendering...
+rendering...
+```
+
+**B**
+
+```js
+export default function App() {
+  console.log("rendering...");
+
+  const initialData = {
+    name: "Yang"
+  };
+  const [data, setData] = useState(initialData);
+  const [data1, setData1] = useState(initialData);
+  useEffect(() => {
+    console.log("inisde useEffect");
+  }, [data1]);
+  return (
+    <div className="App">
+      <h1>Hello CodeSandbox</h1>
+      <h2>{data.name}</h2>
+      <button
+        onClick={() => {
+          setData({ name: "Yang" });
+          setData1({ name: "Yang" }); // new object {name: "Yang"}, different with data1
+        }}
+      >
+        Click Me
+      </button>
+    </div>
+  );
+}
+//output:
+rendering...
+inisde useEffect
+rendering...
+inisde useEffect
+...
+```
+
+
+
+#### 16. Handle with form
 
 Here is a simpler way to handle multiple inputs. Note that we use `[name]` to access properties by **key variables**
 
