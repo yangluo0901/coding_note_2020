@@ -515,7 +515,32 @@ inisde useEffect
 ...
 ```
 
+**How about function as dependencies**?
 
+```js
+export default function App() {
+  console.log("rendering...");
+  const initialData = 0;
+  const [data, setData] = useState(initialData);
+  const func = () => {
+    console.log("i am a function");
+  };
+  useEffect(() => {
+    console.log("i am an effect");
+  }, [func]);
+  return (
+    <div className="App">
+      <h1>Hello CodeSandbox</h1>
+      <h2>{data}</h2>
+      <button onClick={() => setData((oldData) => oldData + 1)}>
+        Click Me
+      </button>
+    </div>
+  );
+}
+```
+
+After the first render, `useEffect` runs every time components re-renders. Since every time, it re-renders, a new object of `func` is created.
 
 #### 16. Handle with form
 
