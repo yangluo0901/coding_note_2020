@@ -18,7 +18,7 @@
 2. Users dont have to be in a group, a user can be in multiple group
 3. **dont use root account except for was account setup**
 
-#### Persmission
+#### Permission
 
 1. json documents policies
 2. <u>least previlege</u>: no more permisson than user needs
@@ -87,7 +87,7 @@ Assign permission to entities you trust, **normally not for physicall users**, b
 #### EC2 instances Purchasing Option
 
 + **On-Demand**: pay for what you use, highest cost but no upfront payment, no long term commitment
-+ **Reserved**: commitment, at least one year
++ **Reserved**: commitment, **only two options:**  one year and three years, 
   + Reserved Instances: fixed type instance
   + Convertible Reserved Instance: flexible instances types
   + Scheduled .. : specific period of time, ex: only use every Saturday from 1 am to 2 am 
@@ -103,9 +103,9 @@ Assign permission to entities you trust, **normally not for physicall users**, b
 
 #### EBS Vloume
 
-+ Elastic Block Store
++ **Elastic Block Store**
 + it is a network drive that can be attached to instance, not a physical drive, it use network to communicate the instance, some lag
-+ **it can only be mounted ot on instance at a time**, but one stance can have more than one EBS
++ **it can only be mounted  on one instance at a time**, but one stance can have more than one EBS
 + <u>bound</u> to specific availability zone, EBS from zone A cannot be used for Zone B, unless use **snapshot**
 + **Snapshot**: make a backup of EBS (with data )and copy it across AZ or region or create a new volume based on the snapshot in different AZ or region
 + like a usb stick
@@ -127,7 +127,7 @@ Assign permission to entities you trust, **normally not for physicall users**, b
 
 + Amazon Machine Image
 + it is a customization of an EC2 instance, we can add our own software, configuration, operating system,...
-+ it **provides requirements** to set up and launch EC2, more like lock.json file in node.js
++ it **provides requirements** to set up and launch EC2, more like lock.json file in node.js, like a **template**
 + it created for specific region and can be copied to other region
 + Example: we have a instance A, then we generate a AMI (more like template requirements.txt), and create a new instance B based on AMI, so two instances A and B share same configuraion
 
@@ -143,7 +143,7 @@ it automate the creation, maintain, validate and test EC2 AMIs. Free and can be 
 
 #### Scalability & High Availability
 
-* **scalability**: an application/system can handle greater loads by **adapting**. Ability to accommodate a larget load by making the hardware strong (scale up), or by adding notes (scale out)
+* **scalability**: an application/system can handle greater loads by **adapting**. Ability to accommodate a larget load by making the hardware strong (scale up), or by adding numbers (scale out)
 * two types of scalability: 
   * <u>vertical</u>: increase size of instance
   * <u>Horizontal</u>: sames as **Elasticity**, increase number of instances, distributed system
@@ -153,7 +153,7 @@ it automate the creation, maintain, validate and test EC2 AMIs. Free and can be 
 
 #### Loading balancing
 
-forward traffic to multiple servers (EC2 instance) across **multiple** zones
+forward traffic to multiple servers (EC2 instance) across **multiple** A zones
 
 * Hide instances and provide single entry point
 * hide failure from users
@@ -163,6 +163,7 @@ forward traffic to multiple servers (EC2 instance) across **multiple** zones
 
 + Application load balancer (HTTP/HTTPs)
 + Network (TCP), high performance
++ IP
 + Classic
 
 #### Auto Scaling Group
@@ -181,10 +182,10 @@ Scale out to match an increased load and scale in to match a decreased load, **a
 
 #### Bucket(directory): 
 
-+ name has to be **globally unique,** but created at region level. 
++ name has to be **globally unique,** but **created at region level.** 
 + **key** is the full path, s3://my-bucket/<u>my_folder/something/something.txt</u>, underlined part is the key
 + **no concpet of "directory",** interface tricks you.
-+ object larget than 5TB, it has to be in **multi-part** format
++ object larger than 5TB, it has to be in **multi-part** format
 
 #### S3 Website
 
@@ -212,14 +213,14 @@ Durability, availability, it can be chose under "**storage class**" section when
 
 + **Standard**: general purpose
 + **Standard-Infrequent Access**: less frequent access, but low latency when access, lower cost, but charge retrieval fee. good for back up
-+ **Intelligent -tiering**: low latency and better performance than S3 standard, **cost-optimized** by automatically moving between two tiers, if object is access frequently, it move objects to start tier, other wise to infrequent tier
++ **Intelligent -tiering**: low latency and better performance than S3 standard, **cost-optimized** by automatically moving between two tiers, if object is access frequently, it move objects to standard tier, other wise to infrequent tier
 + **One zone**: only store in one AZ, less resilience to disaster
 + **Glacier**: meaning object stored there **frozen for long time**, low cost for long term archiving/back up
 + **Glacier Deep Archive**: cheapest, but even longer time needed to retrieve.
 
 #### Object Lock & Glacier Vault Lock
 
-+ **Object lock**: adpaot WORM (write once read many) model, block an object version deletion for a specified amount of time
++ **Object lock**: adopt WORM (write once read many) model, block an object version deletion for a specified amount of time
 + **vault lock**: same as object lokc, the lock policy preventing future edits, **no longer** be changed
 
 #### Snow Family - large scale data transport
@@ -273,7 +274,7 @@ a **bridge** between **on-premise** data and **cloud data**, alow on-premises to
 
 
 
-#### RDS, Read replica, Multi-Az
+#### RDS, Read replica, Multi-Az, Multi-Region
 
 +  **Read replica** 
 
@@ -318,7 +319,7 @@ a **bridge** between **on-premise** data and **cloud data**, alow on-premises to
 
 + Fully **managed** across **3 AZ**
 + **NoSQL**
-+ scalable for massive workload, "serverless" (actually there is a server but it is hided)
++ scalable for massive workload, "**serverless**" (actually there is a server but it is hided)
 + Low **latency**
 + low **cost**, auto scaling
 
@@ -333,7 +334,7 @@ a **bridge** between **on-premise** data and **cloud data**, alow on-premises to
 
 #### Redshift
 
-+ based on PostgresSQL, it is for **OLAP** (online analytical processing, analytics and data warehouse). instead of **OLTP** (online transaction processing, **CRUD** data)
++ based on PostgresSQL, it is for **OLAP** (online analytical processing, analytics and **data warehouse**). instead of **OLTP** (online transaction processing, **CRUD** data)
 + Load data once every hour not every seconds
 + **Columnar** storage (not row based)
 + Massively parallel Query execution (**MPP**)
@@ -350,14 +351,14 @@ a **bridge** between **on-premise** data and **cloud data**, alow on-premises to
 
 #### Athena
 
-+ Serverless, SQL
++ **Serverless**, SQL
 + pay per query
 
 
 
 #### QuickSight
 
-+ serverless machine learning - powdered business intelligence service to create interactive dashboards
++ **serverless** machine learning - powdered business intelligence service to create interactive dashboards
 
 ![image-20210327194721370](images/image-20210327194721370.png)
 
@@ -378,9 +379,14 @@ a **bridge** between **on-premise** data and **cloud data**, alow on-premises to
 #### QLDB
 
 + Stands for Quantum Ledger Database
+
 + store **history of all changes made to database**
+
 + **Immutable**, cannot be remove and modified
+
 + **centralized**  **Blockchain** DB
+
+  
 
 #### Amazon Managed Blockchian
 
@@ -442,7 +448,7 @@ a **bridge** between **on-premise** data and **cloud data**, alow on-premises to
 
 #### ECR, Elastic Container Registry
 
-Where to store ECR
+**Where** to store container image
 
 ![image-20210327214738715](images/image-20210327214738715.png)
 
@@ -504,3 +510,125 @@ In the case below, AWS batch will create EC2 instance, and stop it when batch jo
 ![image-20210327222309866](images/image-20210327222309866.png)
 
 ![image-20210327222330516](images/image-20210327222330516.png)
+
+
+
+## Deployment and Managing Infrastructure at scale
+
+### CloudFormation
+
++ **Declarative** way to create AWS infrastructure, instruction to config AWS infra 
+
++ for Example: in a CloudFormation template:
+
+  • I want a security group
+
+  • I want two EC2 instances using this security group
+
+  • I want an S3 bucket
+
+  • I want a load balancer (ELB) in front of these machines
+
++ then CloudFormation creates those for you in the right order with exact configuration that you specify
++ **Infrastructure as Code**, instead of manually do it through interface, excellent for contorl
++ **saving cost**, delete and recreate, estimate cost based on the CloudFormation template
+
++ productivity
++ it creates all resouces and relations among them for you.
+
+### BeanStalk(set up infra for you)
+
++ Web App 3-tier
+
+  ![image-20210331223355468](images/image-20210331223355468.png)
+
+  
+
++ it uses all the component we have seen before: EC2, ASG, ELB ..
++ **PaaS**
++ **Three architecure models**
+  + single instance : good for dev
+  + LB + ASG: great for production or pre-production
+  + ASG only, good for non-web apps
++ **Health monitoring**
+
+### AWS CodeDeploy
+
++ upgrade versions of code
++ works with EC2 and On-premises, hybrid service
+
+
+
+### AWS Commit
+
++ AWS version of GitHub 
+
+
+
+### AWS CodeBuild
+
++ **build code on the cloud**
++ code can be compiled on cloud
+
+### AWS CodePipeline
+
++ used to connect CodeCommit with CodeBuild
+
++ Basics for **CICD** (<u>continuous Integration & continuous delivery</u>): every time the code is commited and pushed to the repo, code is build. Tested , provisioned and deployed automatically
+
+  ![image-20210331225248010](images/image-20210331225248010.png)
+
+
+
+### AWS CodeArtifact
+
++ **Artifact management** stores and retrieves code **dependencies**
++ CodeArtifact is a secure, scalable and cost-effective artifact management services.
++ works with Maven, npm, yarn, pip ...
++ developer and codeBuild can retrieve the dependencies from codeArtifact directly
+
+
+
+### CodeStar
+
++ unified UI to easily manage software development activities in one place 
+
+
+
+### Cloud9
+
++ cloud **IDE**
++ can edit code in the cloud
+
+
+
+### SSM(AWS System Manager)
+
++ help you manage EC2 and on-premise on the scale
+
++ **Hybrid** service
+
++ Important feature:
+
+  + **patching** automation
+  + run commands across an entire fleet of servers
+
++ works for **windows and linux**
+
++ need to install SSM agent in the instances
+
+  ![image-20210331231352667](images/image-20210331231352667.png)
+
+ 
+
+### AWS OPsWorks
+
+![image-20210331231607460](images/image-20210331231607460.png)
+
+
+
+#### Summary
+
+![image-20210331231921739](images/image-20210331231921739.png)
+
+![image-20210331232116704](images/image-20210331232116704.png)
