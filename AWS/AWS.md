@@ -555,7 +555,7 @@ In the case below, AWS batch will create EC2 instance, and stop it when batch jo
 ### AWS CodeDeploy
 
 + upgrade versions of code
-+ works with EC2 and On-premises, hybrid service
++ works with EC2 and On-premises, **hybrid** service
 
 
 
@@ -632,3 +632,87 @@ In the case below, AWS batch will create EC2 instance, and stop it when batch jo
 ![image-20210331231921739](images/image-20210331231921739.png)
 
 ![image-20210331232116704](images/image-20210331232116704.png)
+
+## Global Infrastructure Section
+
+#### global application
+
++ an application deployed in multiple geographies, for AWS, different Region or Edge location
++ decreased latency
++ disaster recovery
++ attack protection (hack)
+
+### Global infrastructure
+
++ Regions: for deploying applications and infrastructure
++ AZ: made of multiple data centers
++ Edge locations: for content delivery as close as possible
+
+### Global Applications in AWS
+
+#### Global DNS: Route 53
+
++ route users to closest deployment with least latency
+
++ disaster recvoery
+
++ routing policies:
+
+  + Simple routing policy, **no** health check
+
+  + Weighted routing policy, like ALB, **health check**
+
+    ![image-20210401220413718](images/image-20210401220413718.png)
+
+  + Latency routing policy, **health check**,choose server based on latency between users and server
+
+  + failover routing policy, do **health check** , if one server fail, then rest of them will be used
+
+#### Global Content Delivery Network (CDN): CloudFront
+
++ replicate part of your application to AWS Edge locations, decrease latency
+
++ **cache** common requests, improved user experience and **decreased latency**
+
++ DDos protection
+
++ integrated with Shield and AWS Web Application Firewall(WAF)
+
++ CloudFront vs S3 replication
+
+  ![image-20210401221702888](images/image-20210401221702888.png)
+
+
+
+#### S3 Transfer Acceleration
+
++ accelerate global uploads & downloads into Amazon S3
+
++ good for uploading file to the s3 bucket which far way from you, the private between edge locations and s3 bucket is faster
+
+  ![image-20210401222346247](images/image-20210401222346247.png)
+
+#### AWS Global Accelerator
+
++ improve global application availability and performance using the AWS global network
+
++ use **AWS internal network** to route the data transfer, instead of using public network
+
+  ![image-20210401222708327](images/image-20210401222708327.png)
+
+#### AWS Global Accelerator vs CloudFront
+
+![image-20210401222826069](images/image-20210401222826069.png)
+
+#### AWS OutPosts
+
++ server racks that allows the on-premise infrastructure uses AWS cloud service.
++ it will be physically installed on site
++ You are responsible for the physical security of the server racks
+
+
+
+#### 	Summary
+
+![image-20210401223535563](images/image-20210401223535563.png)
+
