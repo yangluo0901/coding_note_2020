@@ -635,7 +635,7 @@ In the case below, AWS batch will create EC2 instance, and stop it when batch jo
 
 ## Global Infrastructure Section
 
-#### global application
+### global application
 
 + an application deployed in multiple geographies, for AWS, different Region or Edge location
 + decreased latency
@@ -660,7 +660,7 @@ In the case below, AWS batch will create EC2 instance, and stop it when batch jo
 
   + Simple routing policy, **no** health check
 
-  + Weighted routing policy, like ALB, **health check**
+  + Weighted routing policy, like ALB (application load balance), **health check**
 
     ![image-20210401220413718](images/image-20210401220413718.png)
 
@@ -668,7 +668,7 @@ In the case below, AWS batch will create EC2 instance, and stop it when batch jo
 
   + failover routing policy, do **health check** , if one server fail, then rest of them will be used
 
-#### Global Content Delivery Network (CDN): CloudFront
+### Global Content Delivery Network (CDN): CloudFront
 
 + replicate part of your application to AWS Edge locations, decrease latency
 
@@ -688,7 +688,7 @@ In the case below, AWS batch will create EC2 instance, and stop it when batch jo
 
 + accelerate global uploads & downloads into Amazon S3
 
-+ good for uploading file to the s3 bucket which far way from you, the private between edge locations and s3 bucket is faster
++ good for uploading file to the s3 bucket which far way from you, the private connection between edge locations and s3 bucket is faster
 
   ![image-20210401222346247](images/image-20210401222346247.png)
 
@@ -715,4 +715,74 @@ In the case below, AWS batch will create EC2 instance, and stop it when batch jo
 #### 	Summary
 
 ![image-20210401223535563](images/image-20210401223535563.png)
+
+## Cloud Integrations
+
+### two patterns of application communication
+
+![image-20210407223721109](images/image-20210407223721109.png)
+
+**Problem** for **Synchronous** can be **problematic**, if there are sudden spikes of traffic
+
+then it is better to decouple your applications:
+
++ SQS, queue model
++ SNS: pub/sub model
++ Kinesis: real time data streaming model ( out of scope for exam)
+
+These service can be **scaled** **independently** from the application
+
+### SQS - Simple Queue Service 
+
+Like a buffer, and decouple applications, consumer poll task from queue instead of procuder directly
+
+![image-20210407224339079](images/image-20210407224339079.png)
+
+![image-20210407224447019](images/image-20210407224447019.png)
+
+above example, multiple requests to web servers to aks process video, instead of send those request directly to video processing layer, web servers send requests or tasks to SQS, and video processing layer poll the task from SQS, in this way the web servers are **decoupled** from video prcoessing layer. and also, since they are decoupled, video procesing layer can be easily **scaled** (horizontally) by using ASG.
+
+Each consumer process **different** messages
+
+
+
+### SNS - Simple Notification Service
+
++ What if you want to send message to different receivers? SNS sends copy of **ALL** messages to different receivers
+
++ it does not retain any data, the delivery is not guaranteed 
+
+![image-20210407225210093](images/image-20210407225210093.png)
+
+
+
+### Kinesis
+
+real-time big data streaming
+
+![image-20210407230118078](images/image-20210407230118078.png)
+
+
+
+### Amazon MQ
+
+**MQ** : message queue
+
+**proprietary policy**: a policy that is under exclusive legal right fo the inventor or maker. No public
+
+Since  SQS and SNS are "cloud-native" services, and they are using **prorietary** protocols from AWS, which is not public.
+
+When the on-premise wantst to migrate to the could, instead of re-engineering the applciation to use SQS and SNS, we ca use Amazon MQ which is a public protocol
+
+Amazon MQ =. Managed, Apache ActiveMQ
+
+**not serverless**, runs on dedicated machine
+
+**does not scale** as much as SQS/SNS
+
+MQ has both queue feature (**SQS**) and topic feature (SNS)
+
+
+
+### Summary
 
