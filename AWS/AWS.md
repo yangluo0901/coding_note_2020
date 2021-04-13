@@ -108,7 +108,7 @@ Assign permission to entities you trust, **normally not for physicall users**, b
 + **it can only be mounted  on one instance at a time**, but one stance can have more than one EBS
 + <u>bound</u> to specific availability zone, EBS from zone A cannot be used for Zone B, unless use **snapshot**
 + **Snapshot**: make a backup of EBS (with data )and copy it across AZ or region or create a new volume based on the snapshot in different AZ or region
-+ like a usb stick
++ like a **usb stick**
 
 #### EC2 Instance Store
 
@@ -668,6 +668,8 @@ In the case below, AWS batch will create EC2 instance, and stop it when batch jo
 
   + failover routing policy, do **health check** , if one server fail, then rest of them will be used
 
+
+
 ### Global Content Delivery Network (CDN): CloudFront
 
 + replicate part of your application to AWS Edge locations, decrease latency
@@ -706,7 +708,7 @@ In the case below, AWS batch will create EC2 instance, and stop it when batch jo
 
 #### AWS OutPosts
 
-+ server racks that allows the on-premise infrastructure uses AWS cloud service.
++ server racks that allows the **on-premise** infrastructure uses AWS cloud service.
 + it will be physically installed on site
 + You are responsible for the physical security of the server racks
 
@@ -734,7 +736,7 @@ These service can be **scaled** **independently** from the application
 
 ### SQS - Simple Queue Service 
 
-Like a buffer, and decouple applications, consumer poll task from queue instead of procuder directly
+Like a buffer, and **decouple** applications, consumer poll task from queue instead of procuder directly
 
 ![image-20210407224339079](images/image-20210407224339079.png)
 
@@ -766,7 +768,7 @@ real-time big data streaming
 
 ### Amazon MQ
 
-**MQ** : message queue
+**MQ** : <u>message queue</u>
 
 **proprietary policy**: a policy that is under exclusive legal right fo the inventor or maker. No public
 
@@ -774,7 +776,7 @@ Since  SQS and SNS are "cloud-native" services, and they are using **prorietary*
 
 When the on-premise wantst to migrate to the could, instead of re-engineering the applciation to use SQS and SNS, we ca use Amazon MQ which is a public protocol
 
-Amazon MQ =. Managed, Apache ActiveMQ
+Amazon MQ = Managed, Apache ActiveMQ
 
 **not serverless**, runs on dedicated machine
 
@@ -786,3 +788,101 @@ MQ has both queue feature (**SQS**) and topic feature (SNS)
 
 ### Summary
 
+![image-20210412223518232](images/image-20210412223518232.png)
+
+
+
+## Cloud Monitoring
+
+### CloudWatch 
+
+#### Metrics
+
++ CloudWatch provides metrics for **every service** in AWS
++ **Metric** is a variable to monitor
++ Metrics has timestamp and can be visualized by creating **CloudWatch dashboards**
+
+![image-20210412224009453](images/image-20210412224009453.png)
+
+#### Alarms
+
++ like an alarm in the real world to trigger notifications for any metric
++ Actions:
+  + Auto Scaling, let you to increase or decrease EC
+  + to stop, terminate, reboot or recvoer an EC2 instance
+  + send notification to an SNS topic
+  + billing alarm
+
++ **Alarm States**: OK, INSUFFICIENT_DATA, ALARM
+
+
+
+#### Logs
+
++ it can collect real time log from: EBS, ECS, AWS Lambda
++ adjust the retention duration of logs
++ **agent** needs to be installed on EC2 or **on-premise** to be work
+
+![image-20210412224944353](images/image-20210412224944353.png)
+
+#### Events
+
++ allows us react to event
++ Schedule: Cron jobs (**scheduled** scripts): eg. we can schedule everyhour to trigger a lambda function
++ or **define a event rule to trigger** the something,e.g. once root user logs in, send a email notification
+
+
+
+#### EventBridge
+
+Simliar with Event, but will more capabilities.
+
+
+
+## CloudTrail
+
++ **similar with ClouWatch logs**
++ it collect  **history of events/API call** made within AWS account  by console, SDK, CLI and AWS service
+
+### Event
+
++ **three types:**
+  + management
+  + data
+  + Insight 
+
++ events are stored for **90 days** in CloudTrail, we can move those into CloudWatch Logs or S3, then use **Athena** service to retrieve logs and analyze it.
+
+![image-20210412230508674](images/image-20210412230508674.png)
+
++ A Trail can be applied to All regions (default) or a  single region
+
+![image-20210412230333131](images/image-20210412230333131.png)
+
+### CouldTrail **Insights**, 
+
+it **detect automatically unusual activity**, it is not free
+
+![image-20210412230447276](images/image-20210412230447276.png)
+
+
+
+### X-Ray
+
++ a debug tool, that gives **you overall big picture of application architecture.**
+
+
+
+### Service Health Dashboard
+
+Shows all regions all services
+
+
+
+### Personal Health Dashboard
+
+shows personal account 
+
+### Summary
+
+![image-20210412232021077](images/image-20210412232021077.png)
