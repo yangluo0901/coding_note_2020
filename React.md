@@ -573,7 +573,80 @@ function App() {
 }
 ```
 
+17. ### Portal
 
+    used to render the chilrend into DOM node that is outside the DOM hierarchy of parent component, for example, a modal that should be cover entire page once it is trigger, it is not good practice just place it in the parent component, place them in the root component instead
+
+    ```html
+    <form>
+      <input name="username" type="text"/>
+      <Modal/>
+      <button type="submit">submit</button>
+    </form>
+    ```
+
+    ```html
+    <Modal/> // should be outside of hierarchy of the form component
+    <form>
+      <input name="username" type="text"/>
+      <button type="submit">submit</button>
+    </form>
+    ```
+
+    in order to use portal, first we need to specify where to render the `<Modal/>`
+
+    so inside `index.html` , we specify the container which has id as `backdrop-root`
+
+    ```html
+     <div id="backdrop-root"></div>
+        <div id="overlay-root"></div>
+        <div id="root"></div>
+    ```
+
+    then, syntax is `ReactDOM.createPortal(<Children />, container)`
+
+    ```react
+    const Backdrop = (props) => {// gray canvas
+      return <div className={classes.backdrop} onClick={props.onConfirm} />;
+    };
+    
+    const ModalOverlay = (props) => {// real modal
+      return (
+        <Card className={classes.modal}>
+          <header className={classes.header}>
+            <h2>{props.title}</h2>
+          </header>
+          <div className={classes.content}>
+            <p>{props.message}</p>
+          </div>
+          <footer className={classes.actions}>
+            <Button onClick={props.onConfirm}>Okay</Button>
+          </footer>
+        </Card>
+      );
+    };
+    
+    const ErrorModal = (props) => {
+      return (
+        <React.Fragment>
+          {ReactDOM.createPortal(
+            <Backdrop onConfirm={props.onConfirm} />,
+            document.getElementById('backdrop-root')
+          )}
+          {ReactDOM.createPortal(
+            <ModalOverlay
+              title={props.title}
+              message={props.message}
+              onConfirm={props.onConfirm}
+            />,
+            document.getElementById('overlay-root')
+          )}
+        </React.Fragment>
+      );
+    };r
+    ```
+
+    
 
 ## Basics of Redux
 
