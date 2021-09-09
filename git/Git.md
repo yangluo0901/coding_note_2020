@@ -6,23 +6,41 @@
 
 ![image-20210908162644085](images/image-20210908162644085.png)
 
-1.   **undo git add**
+1.   Edit git config by editor
 	
-	`git reset /  get reset <file name>`
+	+ Set Default editor: `git config --global core.editor "code --wait"`, here `--wait` means git terminal waits when using editor
 	
-2. **undo the last commit**
+	+ `git config --global -e`
+	
+2. **view staged files**
+
+   `git ls-rm`
+
+3. **see diff between remote and local**
+
+   + `git diff` compare working area to index
+   + `git diff --staged` compare stage area to repo
+   + `git diff HEAD` compare working area to repo
+
+   
+
+4. Use VSCode for diff tools
+
+   + `git config --global diff.tool vscode`
+     + `git config --global difftool.vscode.cmd "code --wait --diff $LOCAL $REMOTE"`
+
+5. **undo git add**
+
+   `git reset /  get reset <file name>`
+
+6. **undo the last commit**
 
   + `git reset --soft HEAD~1` : Reset will rewind your current HEAD branch to the specified revision. In our example above, we'd like to return to the one before the current revision - effectively making our last commit undone.
   + `git reset --hard HEAD~1`: If you don't want to keep these changes, simply use the --hard flag. 
 
-3. **remove files from commit**
-
-   + `git rm --cached <file_name>`
-   + `git commit -m "messges"`
-
 4. **remove files or folders from remote after updating `.gitignore`**
 
-   + `git rm -r --cached <some-directory>`
+   + `git rm -r --cached <some-directory>` remove files from index (staging area)
    + `git add -A`
    + `git commit -m <message>`
    + `git push origin master`
