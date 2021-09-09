@@ -1,5 +1,11 @@
 # git
 
+## Intro
+
+![image-20210908162638748](images/image-20210908162638748.png)
+
+![image-20210908162644085](images/image-20210908162644085.png)
+
 1.   **undo git add**
 	
 	`git reset /  get reset <file name>`
