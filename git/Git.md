@@ -84,7 +84,9 @@
 
 8. ### update credential 
 
-   + **solution1 **: [page](https://docs.github.com/en/get-started/getting-started-with-git/updating-credentials-from-the-macos-keychain)
+   + **solution1 **: [page](https://docs.github.com/en/get-started/getting-started-with-git/updating-credentials-from-the-macos-keychain), `git config --global credential.helper osxkeychain` to let mac know you want to use credential helper to manage key chain, the prompt will show up when you push next time, type in the token as password 
+   
    + **solution 2**: [page](https://stackoverflow.com/questions/20195304/how-do-i-update-the-password-for-git), `git config --global --unset user.password`, then a prompt will show up
-   + **solution 3**: `git config --global credential.helper osxkeychain`
+   
+     
 
